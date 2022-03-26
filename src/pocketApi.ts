@@ -16,6 +16,7 @@ export type PocketItem = {
   resolvedId: "string";
   givenUrl: "string";
   givenTitle: "string";
+  resolvedTitle: "string";
 };
 
 type GetResponseItem = {
@@ -23,6 +24,7 @@ type GetResponseItem = {
   resolved_id: string;
   given_url: string;
   given_title: string;
+  resolved_title: string;
 };
 
 type GetResponse = {
@@ -39,16 +41,20 @@ export async function get({
   sort = "oldest",
   detailType = "complete",
 }: PocketGet): Promise<PocketItem[]> {
-  const url = new URL("/get", apiBase);
-  const searchParams = url.searchParams;
-  searchParams.set("consumer-key", consumerKey);
-  searchParams.set("access-token", accessToken);
-  searchParams.set("state", state);
-  searchParams.set("contentType", contentType);
-  searchParams.set("sort", sort);
-  searchParams.set("detailType", detailType);
-
-  const resp = await fetch(url.toString());
+  const resp = await fetch(`${apiBase}/get`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      consumer_key: consumerKey,
+      access_token: accessToken,
+      state: state,
+      contentType: contentType,
+      sort,
+      detailType: detailType,
+    }),
+  });
   // TODO: type check the response
   const json = (await resp.json()) as GetResponse;
 
@@ -59,6 +65,7 @@ export async function get({
         resolvedId: responseItem.resolved_id,
         givenUrl: responseItem.given_url,
         givenTitle: responseItem.given_title,
+        resolvedTitle: responseItem.resolved_title,
       } as PocketItem)
   );
 }
