@@ -2,7 +2,7 @@ import fetch, { Request } from "node-fetch";
 
 const apiBase = "https://getpocket.com/v3";
 
-export type PocketGet = {
+type PocketGet = {
   consumerKey: string;
   accessToken: string;
   state?: "unread" | "all";
@@ -11,7 +11,7 @@ export type PocketGet = {
   detailType?: "simple" | "complete";
 };
 
-export type PocketItem = {
+type PocketItem = {
   itemId: "string";
   resolvedId: "string";
   givenUrl: "string";

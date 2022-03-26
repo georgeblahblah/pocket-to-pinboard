@@ -5,7 +5,7 @@ type PinboardAuthRequest = {
   authToken: string;
 };
 
-export type PinboardSaveRequest = {
+type PinboardSaveRequest = {
   url: string;
   description: string;
   shared?: boolean;
