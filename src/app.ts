@@ -1,5 +1,6 @@
 import { getConfigItem } from "./config";
 import { get as getFromPocket } from "./pocketApi";
+import { saveBookmark as saveToPinboard } from "./pinboardApi";
 
 export const handler = async () => {
   // get config for the pocket API
@@ -12,5 +13,13 @@ export const handler = async () => {
   });
 
   // save the bookmarks to pinboard
+  const pinboardToken = await getConfigItem("pinboardToken");
+  pocketBookmarks.map(async (pb) => {
+    const result = await saveToPinboard({
+      authToken: `${pinboardToken}`,
+      url: pb.givenUrl,
+      description: pb.resolvedTitle,
+    });
+  });
   // mark the bookmarks as unread in pocket
 };
