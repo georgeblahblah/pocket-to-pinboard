@@ -48,11 +48,7 @@ export const saveBookmark = async ({
   if (tags.length) {
     apiUrl.searchParams.append("tags", tags.join(","));
   }
-  const resp = await fetch(`${apiUrl.toString()}`, {
-    headers: {
-      Accept: "application/json",
-    },
-  });
+  const resp = await fetch(`${apiUrl.toString()}`);
 
   const json = (await resp.json()) as { code: string };
 
