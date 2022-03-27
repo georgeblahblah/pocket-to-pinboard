@@ -1,12 +1,12 @@
 {
+  "include": ["src/*.ts"],
   "compilerOptions": {
       "target": "ES2020",
       "module": "CommonJS",
       "moduleResolution": "node",
       "lib": ["ES2020"],
-      "declaration": true,
       "strict": true,
-      // "noImplicitAny": true,
+      "noImplicitAny": true,
       "strictNullChecks": true,
       "esModuleInterop": true,
       "noImplicitThis": true,
@@ -15,8 +15,6 @@
       "noUnusedParameters": false,
       "noImplicitReturns": true,
       "noFallthroughCasesInSwitch": false,
-      "inlineSourceMap": true,
-      "inlineSources": true,
       "experimentalDecorators": true,
       "strictPropertyInitialization": false,
       "typeRoots": ["./node_modules/@types"],

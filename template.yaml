@@ -1,0 +1,16 @@
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  PocketToPinboardLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Zip
+      CodeUri: dist/
+      Runtime: nodejs14.x
+      Handler: app.handler
+      Timeout: 5
+      Events:
+        Hourly:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 hour)
