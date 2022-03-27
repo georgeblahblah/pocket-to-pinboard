@@ -9,7 +9,6 @@ type AuthProps = {
 
 type GetRequestProps = AuthProps & {
   state?: "unread" | "all";
-  contentType?: "article";
   sort?: "newest" | "oldest";
   detailType?: "simple" | "complete";
 };
@@ -59,7 +58,6 @@ export async function getBookmarks({
   consumerKey,
   accessToken,
   state = "unread",
-  contentType = "article",
   sort = "oldest",
   detailType = "complete",
 }: GetRequestProps): Promise<PocketItem[]> {
@@ -72,7 +70,6 @@ export async function getBookmarks({
       consumer_key: consumerKey,
       access_token: accessToken,
       state: state,
-      contentType: contentType,
       sort,
       detailType: detailType,
     }),
@@ -109,11 +106,7 @@ export async function archiveBookmarks({
       }))
     )
   );
-  const resp = await fetch(url.toString(), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const resp = await fetch(url.toString());
   const json = (await resp.json()) as ArchiveBookmarkResponse;
   if (json.status === 1) {
     return {

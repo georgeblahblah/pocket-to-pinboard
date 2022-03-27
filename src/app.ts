@@ -30,7 +30,7 @@ export const handler = async () => {
   console.info(`=> Archiving bookmarks in Pocket`);
   const pocketItemIdsToArchive = pocketBookmarks.map((pb) => pb.itemId);
   await pocketApi.archiveBookmarks({
-    consumerKey: pocketAccessToken,
+    consumerKey: pocketConsumerKey,
     accessToken: pocketAccessToken,
     itemIds: pocketItemIdsToArchive,
   });
