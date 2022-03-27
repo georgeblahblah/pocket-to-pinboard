@@ -105,6 +105,7 @@ export async function archiveBookmark({
     JSON.stringify(
       itemIds.map((itemId) => ({
         item_id: itemId,
+        action: "archive",
       }))
     )
   );
