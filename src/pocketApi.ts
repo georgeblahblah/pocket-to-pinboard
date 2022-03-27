@@ -1,14 +1,23 @@
-import fetch, { Request } from "node-fetch";
+import fetch from "node-fetch";
 
 const apiBase = "https://getpocket.com/v3";
 
-type PocketGet = {
+type AuthProps = {
   consumerKey: string;
   accessToken: string;
+};
+
+type GetRequestProps = AuthProps & {
   state?: "unread" | "all";
   contentType?: "article";
   sort?: "newest" | "oldest";
   detailType?: "simple" | "complete";
+};
+
+type ItemId = string;
+
+type ArchiveRequestProps = AuthProps & {
+  itemIds: ItemId[];
 };
 
 type PocketItem = {
@@ -27,20 +36,33 @@ type GetResponseItem = {
   resolved_title: string;
 };
 
-type GetResponse = {
+type GetBookmarksResponse = {
   status: number;
   list: Record<string, GetResponseItem>;
 };
 
+type ArchiveBookmarkError = {
+  error: true;
+};
+
+type ArchiveBookmarkSuccess = {
+  success: true;
+};
+
+type ArchiveBookmarkResult = ArchiveBookmarkError | ArchiveBookmarkSuccess;
+type ArchiveBookmarkResponse = {
+  status: number;
+};
+
 // Endpoint documentation: https://getpocket.com/developer/docs/v3/retrieve
-export async function get({
+export async function getBookmarks({
   consumerKey,
   accessToken,
   state = "unread",
   contentType = "article",
   sort = "oldest",
   detailType = "complete",
-}: PocketGet): Promise<PocketItem[]> {
+}: GetRequestProps): Promise<PocketItem[]> {
   const resp = await fetch(`${apiBase}/get`, {
     method: "POST",
     headers: {
@@ -56,7 +78,7 @@ export async function get({
     }),
   });
   // TODO: type check the response
-  const json = (await resp.json()) as GetResponse;
+  const json = (await resp.json()) as GetBookmarksResponse;
 
   return Object.values(json.list).map(
     (responseItem) =>
@@ -68,4 +90,37 @@ export async function get({
         resolvedTitle: responseItem.resolved_title,
       } as PocketItem)
   );
+}
+
+export async function archiveBookmark({
+  consumerKey,
+  accessToken,
+  itemIds = [],
+}: ArchiveRequestProps): Promise<ArchiveBookmarkResult> {
+  const url = new URL(`${apiBase}/send`);
+  url.searchParams.append("consumer_key", consumerKey);
+  url.searchParams.append("access_token", accessToken);
+  url.searchParams.append(
+    "actions",
+    JSON.stringify(
+      itemIds.map((itemId) => ({
+        item_id: itemId,
+      }))
+    )
+  );
+  const resp = await fetch(url.toString(), {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const json = (await resp.json()) as ArchiveBookmarkResponse;
+  if (json.status === 1) {
+    return {
+      success: true,
+    } as ArchiveBookmarkSuccess;
+  } else {
+    return {
+      error: true,
+    } as ArchiveBookmarkError;
+  }
 }
