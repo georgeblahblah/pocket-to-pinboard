@@ -92,7 +92,7 @@ export async function getBookmarks({
   );
 }
 
-export async function archiveBookmark({
+export async function archiveBookmarks({
   consumerKey,
   accessToken,
   itemIds = [],
