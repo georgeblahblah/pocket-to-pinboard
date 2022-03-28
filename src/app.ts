@@ -15,6 +15,9 @@ export const handler = async () => {
   });
   console.info(`=> Fetched ${pocketBookmarks.length} bookmarks from Pocket`);
 
+  // No need to continue if there are no bookmarks
+  if (pocketBookmarks.length == 0) return;
+
   // save the bookmarks to pinboard
   console.info(`=> Adding bookmarks to Pinboard`);
   const pinboardToken = await getConfigItem("pinboardToken");
