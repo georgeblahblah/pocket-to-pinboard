@@ -25,6 +25,7 @@ const fetchConfigFromSSM = async (): Promise<Config> => {
   if (state) {
     return Promise.resolve(state);
   }
+  state = {};
   const command = new GetParametersCommand({
     Names: parameterPaths,
     WithDecryption: true,
@@ -34,10 +35,8 @@ const fetchConfigFromSSM = async (): Promise<Config> => {
   response.Parameters?.forEach((parameter) => {
     const maybeParameterName = parameter.Name;
     if (maybeParameterName !== undefined) {
-      state[maybeParameterName] = parameter.Value!.replace(
-        parameterPathPrefix,
-        ""
-      );
+      const parameterName = maybeParameterName.replace(parameterPathPrefix, "");
+      state[parameterName] = parameter.Value!;
     }
   });
   return state;
