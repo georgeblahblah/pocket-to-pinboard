@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node run-local.ts"
+    "start": "ts-node run-local.ts",
+    "build": "tsc",
+    "prebuild": "rm -rf dist .aws-sam",
+    "postbuild": "./package.sh"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
