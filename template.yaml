@@ -9,8 +9,36 @@ Resources:
       Runtime: nodejs14.x
       Handler: app.handler
       Timeout: 5
+      Role: !GetAtt PocketToPinboardFunctionRole.Arn
       Events:
         Hourly:
           Type: Schedule
           Properties:
             Schedule: rate(1 hour)
+
+  PocketToPinboardFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        -
+          PolicyName: 'PocketToPinboardParameterAccess'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: Allow
+                Action:
+                  - 'ssm:GetParameters'
+                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/pocketToPinboard/*'
