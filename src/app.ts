@@ -26,6 +26,7 @@ export const handler = async () => {
       authToken: `${pinboardToken}`,
       url: pb.givenUrl,
       description: pb.resolvedTitle,
+      tags: pb.tags,
     });
   });
 
