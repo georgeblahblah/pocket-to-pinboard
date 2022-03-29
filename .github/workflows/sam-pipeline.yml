@@ -1,0 +1,33 @@
+name: Build and deploy
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+env:
+  AWS_REGION: eu-west-2
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: yarn install, build
+        uses: actions/setup-node@v2
+        with:
+          node-version-file: '.nvmrc'
+      - run: |
+          yarn install
+          yarn build
+
+      - uses: aws-actions/setup-sam@v1
+
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - run: |
+          sam build
+          sam deploy --capabilities=CAPABILITY_IAM --region=${{ env.AWS_REGION }} --s3-bucket=${{ secrets.S3_UPLOAD_BUCKET }} --s3-prefix=${{ secrets.S3_PREFIX }} --stack-name=${{ secrets.STACK_NAME }}
