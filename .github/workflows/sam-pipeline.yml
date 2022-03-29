@@ -10,6 +10,7 @@ env:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    environment: Deploy
     steps:
       - uses: actions/checkout@v2
 
