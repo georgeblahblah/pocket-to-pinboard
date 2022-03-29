@@ -19,12 +19,18 @@ type ArchiveRequestProps = AuthProps & {
   itemIds: ItemId[];
 };
 
+type PocketTag = {
+  itemId: string;
+  tag: string;
+};
+
 type PocketItem = {
-  itemId: "string";
-  resolvedId: "string";
-  givenUrl: "string";
-  givenTitle: "string";
-  resolvedTitle: "string";
+  itemId: string;
+  resolvedId: string;
+  givenUrl: string;
+  givenTitle: string;
+  resolvedTitle: string;
+  tags: string[];
 };
 
 type GetResponseItem = {
@@ -33,6 +39,7 @@ type GetResponseItem = {
   given_url: string;
   given_title: string;
   resolved_title: string;
+  tags: Record<string, PocketTag>;
 };
 
 type GetBookmarksResponse = {
@@ -85,6 +92,7 @@ export async function getBookmarks({
         givenUrl: responseItem.given_url,
         givenTitle: responseItem.given_title,
         resolvedTitle: responseItem.resolved_title,
+        tags: Object.keys(responseItem.tags),
       } as PocketItem)
   );
 }
