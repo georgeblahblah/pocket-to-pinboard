@@ -4,6 +4,8 @@
  */
 
 export default {
+  preset: "ts-jest",
+  testEnvironment: "node",
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
