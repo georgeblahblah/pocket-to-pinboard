@@ -39,7 +39,7 @@ type GetResponseItem = {
   given_url: string;
   given_title: string;
   resolved_title: string;
-  tags: Record<string, PocketTag>;
+  tags?: Record<string, PocketTag>;
 };
 
 type GetBookmarksResponse = {
@@ -92,7 +92,7 @@ export async function getBookmarks({
         givenUrl: responseItem.given_url,
         givenTitle: responseItem.given_title,
         resolvedTitle: responseItem.resolved_title,
-        tags: Object.keys(responseItem.tags),
+        tags: Object.keys(responseItem.tags ?? {}),
       } as PocketItem)
   );
 }
