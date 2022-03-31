@@ -60,7 +60,7 @@ test("syncs bookmarks from Pocket to Pinboard", async () => {
     jsonResponse({
       list: {
         1: {
-          item_id: "1",
+          item_id: "PocketID1",
           resolved_id: "1",
           given_url: "example.com",
           given_title: "Example Given",
@@ -97,4 +97,26 @@ test("syncs bookmarks from Pocket to Pinboard", async () => {
   expect(pinboardURL.searchParams.get("shared")).toBe("no");
   expect(pinboardURL.searchParams.get("format")).toBe("json");
   expect(pinboardURL.searchParams.get("tags")).toBe("1");
+
+  const archivePocketURL = new URL(fetchMock.mock.calls[2][0].toString());
+  expect(archivePocketURL.origin).toBe(`https://getpocket.com`);
+  expect(archivePocketURL.pathname).toBe(`/v3/send`);
+
+  expect(archivePocketURL.searchParams.get("consumer_key")).toBe(
+    mockConfig.pocketConsumerKey
+  );
+  expect(archivePocketURL.searchParams.get("access_token")).toBe(
+    mockConfig.pocketAccessToken
+  );
+
+  expect(
+    JSON.parse(archivePocketURL.searchParams.get("actions") ?? "")
+  ).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        item_id: "PocketID1",
+        action: "archive",
+      }),
+    ])
+  );
 });
