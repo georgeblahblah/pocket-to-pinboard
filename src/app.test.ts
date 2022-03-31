@@ -30,5 +30,19 @@ test("the handler should exit early if there are no bookmarks received from Pock
       }),
   } as Response);
   await handler();
-  expect(fetchMock).toHaveBeenCalledWith(`https://getpocket.com/v3/get`);
+  // assert the correct URL was passed to fetch
+  expect(fetchMock.mock.calls[0][0]).toBe(`https://getpocket.com/v3/get`);
+  // assert the correct query parameters were passed
+  expect(fetchMock.mock.calls[0][1]).toEqual(
+    expect.objectContaining({
+      body: JSON.stringify({
+        consumer_key: mockConfig.pocketConsumerKey,
+        access_token: mockConfig.pocketAccessToken,
+        state: "unread",
+        sort: "oldest",
+        detailType: "complete",
+      }),
+    })
+  );
+  expect(fetchMock).toHaveBeenCalledTimes(1);
 });

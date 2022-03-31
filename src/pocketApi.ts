@@ -44,7 +44,7 @@ type GetResponseItem = {
 
 type GetBookmarksResponse = {
   status: number;
-  list: Record<string, GetResponseItem>;
+  list?: Record<string, GetResponseItem>;
 };
 
 type ArchiveBookmarkError = {
@@ -84,7 +84,7 @@ export async function getBookmarks({
   // TODO: type check the response
   const json = (await resp.json()) as GetBookmarksResponse;
 
-  return Object.values(json.list).map(
+  return Object.values(json.list ?? []).map(
     (responseItem) =>
       ({
         itemId: responseItem.item_id,
