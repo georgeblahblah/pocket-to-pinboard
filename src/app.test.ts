@@ -10,6 +10,12 @@ const mockConfig: Record<string, string> = {
   pinboardToken: PINBOARD_TOKEN,
 };
 
+const jsonResponse = (json: any): Response =>
+  ({
+    ok: true,
+    json: () => Promise.resolve(json),
+  } as Response);
+
 jest.mock("./config", () => ({
   getConfigItem: async (key: string) => Promise.resolve(mockConfig[key]),
 }));
@@ -17,18 +23,20 @@ jest.mock("./config", () => ({
 jest.mock("node-fetch");
 const fetchMock = fetch as jest.MockedFunction<typeof fetch>;
 
+beforeEach(() => {
+  jest.resetAllMocks();
+});
+
 /*
 This is an integration test. The config module and responses
 from the Pocket & Pinboard APIs are mocked
 */
 test("the handler should exit early if there are no bookmarks received from Pocket", async () => {
-  fetchMock.mockResolvedValueOnce({
-    ok: true,
-    json: () =>
-      Promise.resolve({
-        list: {},
-      }),
-  } as Response);
+  fetchMock.mockResolvedValueOnce(
+    jsonResponse({
+      list: {},
+    })
+  );
   await handler();
   // assert the correct URL was passed to fetch
   expect(fetchMock.mock.calls[0][0]).toBe(`https://getpocket.com/v3/get`);
@@ -45,4 +53,48 @@ test("the handler should exit early if there are no bookmarks received from Pock
     })
   );
   expect(fetchMock).toHaveBeenCalledTimes(1);
+});
+
+test("syncs bookmarks from Pocket to Pinboard", async () => {
+  fetchMock.mockResolvedValueOnce(
+    jsonResponse({
+      list: {
+        1: {
+          item_id: "1",
+          resolved_id: "1",
+          given_url: "example.com",
+          given_title: "Example Given",
+          resolved_title: "Example Resolved",
+          tags: {
+            1: {
+              item_id: "1",
+              tag: "tag_name",
+            },
+          },
+        },
+      },
+    })
+  );
+
+  fetchMock.mockResolvedValueOnce(
+    jsonResponse({
+      code: "done",
+    })
+  );
+
+  fetchMock.mockResolvedValueOnce(jsonResponse({}));
+  await handler();
+
+  // assert request to Pinboard is correct
+  const pocketURL = new URL(fetchMock.mock.calls[1][0].toString());
+  expect(pocketURL.origin).toBe(`https://api.pinboard.in`);
+  expect(pocketURL.pathname).toBe(`/v1/posts/add`);
+  expect(pocketURL.searchParams.get("auth_token")).toBe(
+    mockConfig.pinboardToken
+  );
+  expect(pocketURL.searchParams.get("url")).toBe("example.com");
+  expect(pocketURL.searchParams.get("description")).toBe("Example Resolved");
+  expect(pocketURL.searchParams.get("shared")).toBe("no");
+  expect(pocketURL.searchParams.get("format")).toBe("json");
+  expect(pocketURL.searchParams.get("tags")).toBe("1");
 });
