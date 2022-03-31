@@ -12,15 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: Deploy
     steps:
-      - uses: actions/checkout@v2
-
-      - name: yarn install, build
-        uses: actions/setup-node@v2
-        with:
-          node-version-file: '.nvmrc'
-      - run: |
-          yarn install
-          yarn build
+      - uses: ./.github/workflows/install
+      - run: yarn test
+      - run: yarn build
 
       - uses: aws-actions/setup-sam@v1
 
