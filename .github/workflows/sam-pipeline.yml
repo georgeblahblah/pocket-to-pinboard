@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: Deploy
     steps:
-      - uses: ./.github/workflows/install
+      - uses: ./.github/workflows/install.yml
       - run: yarn test
       - run: yarn build
 
