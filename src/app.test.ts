@@ -86,15 +86,15 @@ test("syncs bookmarks from Pocket to Pinboard", async () => {
   await handler();
 
   // assert request to Pinboard is correct
-  const pocketURL = new URL(fetchMock.mock.calls[1][0].toString());
-  expect(pocketURL.origin).toBe(`https://api.pinboard.in`);
-  expect(pocketURL.pathname).toBe(`/v1/posts/add`);
-  expect(pocketURL.searchParams.get("auth_token")).toBe(
+  const pinboardURL = new URL(fetchMock.mock.calls[1][0].toString());
+  expect(pinboardURL.origin).toBe(`https://api.pinboard.in`);
+  expect(pinboardURL.pathname).toBe(`/v1/posts/add`);
+  expect(pinboardURL.searchParams.get("auth_token")).toBe(
     mockConfig.pinboardToken
   );
-  expect(pocketURL.searchParams.get("url")).toBe("example.com");
-  expect(pocketURL.searchParams.get("description")).toBe("Example Resolved");
-  expect(pocketURL.searchParams.get("shared")).toBe("no");
-  expect(pocketURL.searchParams.get("format")).toBe("json");
-  expect(pocketURL.searchParams.get("tags")).toBe("1");
+  expect(pinboardURL.searchParams.get("url")).toBe("example.com");
+  expect(pinboardURL.searchParams.get("description")).toBe("Example Resolved");
+  expect(pinboardURL.searchParams.get("shared")).toBe("no");
+  expect(pinboardURL.searchParams.get("format")).toBe("json");
+  expect(pinboardURL.searchParams.get("tags")).toBe("1");
 });
