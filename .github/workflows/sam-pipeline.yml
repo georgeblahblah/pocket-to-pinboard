@@ -10,7 +10,7 @@ env:
 jobs:
   test:
     name: Test
-    uses: ./.github/workflows/test.yml@main
+    uses: ./.github/workflows/test.yml
 
   build-deploy:
     runs-on: ubuntu-latest
