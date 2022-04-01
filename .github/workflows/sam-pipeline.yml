@@ -8,13 +8,23 @@ env:
   AWS_REGION: eu-west-2
 
 jobs:
+  test:
+    name: Test
+    uses: ./.github/workflows/test.yml@main
+
   build-deploy:
     runs-on: ubuntu-latest
     environment: Deploy
     steps:
-      - uses: ./.github/workflows/install.yml
-      - run: yarn test
-      - run: yarn build
+      - uses: actions/checkout@v2
+
+      - name: build
+        uses: actions/setup-node@v2
+        with:
+          node-version-file: '.nvmrc'
+      - run: |
+          yarn install
+          yarn build
 
       - uses: aws-actions/setup-sam@v1
 
