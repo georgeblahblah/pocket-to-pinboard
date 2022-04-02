@@ -21,14 +21,18 @@ export const handler = async () => {
   // save the bookmarks to pinboard
   console.info(`=> Adding bookmarks to Pinboard`);
   const pinboardToken = await getConfigItem("pinboardToken");
-  pocketBookmarks.map(async (pb) => {
-    const result = await pinboardApi.saveBookmark({
-      authToken: `${pinboardToken}`,
-      url: pb.givenUrl,
-      description: pb.resolvedTitle,
-      tags: pb.tags,
-    });
-  });
+  await Promise.all(
+    pocketBookmarks.map(async (pb) => {
+      const bookmarkToSave = {
+        authToken: `${pinboardToken}`,
+        url: pb.givenUrl,
+        description: pb.resolvedTitle,
+        tags: pb.tags,
+      };
+      console.log(bookmarkToSave);
+      await pinboardApi.saveBookmark(bookmarkToSave);
+    })
+  );
 
   // archive the bookmarks in pocket
   console.info(`=> Archiving bookmarks in Pocket`);
