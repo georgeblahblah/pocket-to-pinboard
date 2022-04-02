@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { isEmptyString } from "./lib";
 
 const apiBase = "https://getpocket.com/v3";
 
@@ -24,12 +25,12 @@ type PocketTag = {
   tag: string;
 };
 
-type PocketItem = {
+export type PocketItem = {
   itemId: string;
   resolvedId: string;
   givenUrl: string;
-  givenTitle: string;
-  resolvedTitle: string;
+  givenTitle?: string;
+  resolvedTitle?: string;
   tags: string[];
 };
 
@@ -90,8 +91,12 @@ export async function getBookmarks({
         itemId: responseItem.item_id,
         resolvedId: responseItem.resolved_id,
         givenUrl: responseItem.given_url,
-        givenTitle: responseItem.given_title,
-        resolvedTitle: responseItem.resolved_title,
+        givenTitle: !isEmptyString(responseItem.given_title)
+          ? responseItem.given_title
+          : undefined,
+        resolvedTitle: !isEmptyString(responseItem.resolved_title)
+          ? responseItem.resolved_title
+          : undefined,
         tags: Object.keys(responseItem.tags ?? {}),
       } as PocketItem)
   );
