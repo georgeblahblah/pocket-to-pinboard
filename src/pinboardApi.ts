@@ -41,10 +41,12 @@ export const saveBookmark = async ({
   const apiUrl = new URL(`${apiBase}/posts/add`);
   apiUrl.searchParams.append("auth_token", authToken);
   apiUrl.searchParams.append("url", url);
-  apiUrl.searchParams.append("description", description);
   apiUrl.searchParams.append("shared", shared ? "yes" : "no");
   apiUrl.searchParams.append("replace", replace ? "yes" : "no");
   apiUrl.searchParams.append("format", "json");
+  if (description) {
+    apiUrl.searchParams.append("description", description);
+  }
   if (tags.length) {
     apiUrl.searchParams.append("tags", tags.join(","));
   }

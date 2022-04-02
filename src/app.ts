@@ -1,4 +1,5 @@
 import { getConfigItem } from "./config";
+import { getDescription } from "./lib";
 import * as pocketApi from "./pocketApi";
 import * as pinboardApi from "./pinboardApi";
 
@@ -23,13 +24,13 @@ export const handler = async () => {
   const pinboardToken = await getConfigItem("pinboardToken");
   await Promise.all(
     pocketBookmarks.map(async (pb) => {
+      const description = getDescription(pb);
       const bookmarkToSave = {
         authToken: `${pinboardToken}`,
         url: pb.givenUrl,
-        description: pb.resolvedTitle,
+        description,
         tags: pb.tags,
       };
-      console.log(bookmarkToSave);
       await pinboardApi.saveBookmark(bookmarkToSave);
     })
   );
