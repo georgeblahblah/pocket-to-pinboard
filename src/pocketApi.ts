@@ -62,7 +62,7 @@ type ArchiveBookmarkResponse = {
 };
 
 // Endpoint documentation: https://getpocket.com/developer/docs/v3/retrieve
-export async function getBookmarks({
+async function getBookmarks({
   consumerKey,
   accessToken,
   state = "unread",
@@ -102,7 +102,7 @@ export async function getBookmarks({
   );
 }
 
-export async function archiveBookmarks({
+async function archiveBookmarks({
   consumerKey,
   accessToken,
   itemIds = [],
@@ -131,3 +131,10 @@ export async function archiveBookmarks({
     } as ArchiveBookmarkError;
   }
 }
+
+export const createPocketApi = (consumerKey: string, accessToken: string) => ({
+  archiveBookmarks: (props: Omit<ArchiveRequestProps, keyof AuthProps>) =>
+    archiveBookmarks({ ...props, consumerKey, accessToken }),
+  getBookmarks: (props?: Omit<GetRequestProps, keyof AuthProps>) =>
+    getBookmarks({ ...props, consumerKey, accessToken }),
+});
