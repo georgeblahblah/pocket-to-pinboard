@@ -27,7 +27,6 @@ export const handler = async () => {
     pocketBookmarks.map(async (pb) => {
       const description = getDescription(pb);
       const bookmarkToSave = {
-        authToken: `${pinboardToken}`,
         url: pb.givenUrl,
         description,
         tags: pb.tags,
