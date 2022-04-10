@@ -1,13 +1,17 @@
 import { getConfigItem } from "./config";
 import { getDescription } from "./lib";
 import { createPocketApi } from "./pocketApi";
-import * as pinboardApi from "./pinboardApi";
+import { createPinboardApi } from "./pinboardApi";
 
 export const handler = async () => {
   // get config for the pocket API
   const pocketAccessToken = await getConfigItem("pocketAccessToken");
   const pocketConsumerKey = await getConfigItem("pocketConsumerKey");
   const pocketApi = createPocketApi(pocketConsumerKey, pocketAccessToken);
+
+  // get config for the Pinboard API
+  const pinboardToken = await getConfigItem("pinboardToken");
+  const pinboardApi = createPinboardApi(pinboardToken);
 
   // fetch unread bookmarks from pocket
   console.info("=> Fetching bookmarks from Pocket");
@@ -19,7 +23,6 @@ export const handler = async () => {
 
   // save the bookmarks to pinboard
   console.info(`=> Adding bookmarks to Pinboard`);
-  const pinboardToken = await getConfigItem("pinboardToken");
   await Promise.all(
     pocketBookmarks.map(async (pb) => {
       const description = getDescription(pb);
