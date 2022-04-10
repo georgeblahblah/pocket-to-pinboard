@@ -29,7 +29,7 @@ const fail = (): PinboardSaveFail => ({
   error: true,
 });
 
-export const saveBookmark = async ({
+const saveBookmark = async ({
   url,
   description,
   shared = false,
@@ -57,3 +57,8 @@ export const saveBookmark = async ({
   if (json.code === "done") return success();
   else return fail();
 };
+
+export const createPinboardApi = (authToken: string) => ({
+  saveBookmark: (props: PinboardSaveRequest) =>
+    saveBookmark({ ...props, authToken }),
+});
