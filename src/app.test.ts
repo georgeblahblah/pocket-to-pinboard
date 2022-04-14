@@ -70,6 +70,10 @@ test("syncs bookmarks from Pocket to Pinboard", async () => {
               item_id: "1",
               tag: "tag_name",
             },
+            toread: {
+              item_id: "",
+              tag: "toread",
+            },
           },
         },
       },
@@ -97,6 +101,7 @@ test("syncs bookmarks from Pocket to Pinboard", async () => {
   expect(pinboardURL.searchParams.get("shared")).toBe("no");
   expect(pinboardURL.searchParams.get("format")).toBe("json");
   expect(pinboardURL.searchParams.get("tags")).toBe("1");
+  expect(pinboardURL.searchParams.get("toread")).toBe("yes");
 
   const archivePocketURL = new URL(fetchMock.mock.calls[2][0].toString());
   expect(archivePocketURL.origin).toBe(`https://getpocket.com`);
