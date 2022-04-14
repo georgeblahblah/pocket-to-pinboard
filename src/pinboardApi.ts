@@ -29,6 +29,8 @@ const fail = (): PinboardSaveFail => ({
   error: true,
 });
 
+const includes = (a: string) => (b: string) => a === b;
+
 const saveBookmark = async ({
   url,
   description,
@@ -47,8 +49,16 @@ const saveBookmark = async ({
   if (description) {
     apiUrl.searchParams.append("description", description);
   }
+
+  if (tags.some(includes("toread"))) {
+    apiUrl.searchParams.append("toread", "yes");
+  }
+
   if (tags.length) {
-    apiUrl.searchParams.append("tags", tags.join(","));
+    apiUrl.searchParams.append(
+      "tags",
+      tags.filter((v) => !includes("toread")(v)).join(",")
+    );
   }
   const resp = await fetch(`${apiUrl.toString()}`);
 
