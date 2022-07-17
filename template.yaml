@@ -6,7 +6,7 @@ Resources:
     Properties:
       PackageType: Zip
       CodeUri: dist/
-      Runtime: nodejs14.x
+      Runtime: nodejs16.x
       Handler: app.handler
       Timeout: 5
       Role: !GetAtt PocketToPinboardFunctionRole.Arn
